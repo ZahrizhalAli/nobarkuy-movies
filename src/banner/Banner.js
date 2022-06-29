@@ -2,6 +2,7 @@ import axios from "../requests/axios";
 import React, { useEffect, useState } from "react";
 import requests from "../requests/requests";
 import "./Banner.css";
+
 function Banner() {
   const [movie, setMovie] = useState([]);
 
@@ -21,28 +22,30 @@ function Banner() {
   }, []);
 
   return (
-    <header
-      className="header__banner"
-      style={{
-        backgroundSize: "cover",
-        backgroundImage: `url(
+    <>
+      <header
+        className="header__banner"
+        style={{
+          backgroundSize: "cover",
+          backgroundImage: `url(
             "https://image.tmdb.org/t/p/original${movie?.backdrop_path}"
         )`,
-        backgroundPosition: "center center",
-      }}
-    >
-      <div className="banner__contents">
-        <h1>{movie?.title || movie?.name || movie?.original_name}</h1>
-        <div className="banner__buttons">
-          <button className="banner__button">Play</button>
-          <button className="banner__button">My List</button>
-        </div>
+          backgroundPosition: "center center",
+        }}
+      >
+        <div className="banner__contents">
+          <h1>{movie?.title || movie?.name || movie?.original_name}</h1>
+          <div className="banner__buttons">
+            <button className="banner__button">Play</button>
+            <button className="banner__button">My List</button>
+          </div>
 
-        <h1 className="banner__description">
-          {truncate(movie?.overview, 150)}
-        </h1>
-      </div>
-    </header>
+          <h1 className="banner__description">
+            {truncate(movie?.overview, 150)}
+          </h1>
+        </div>
+      </header>
+    </>
   );
 }
 

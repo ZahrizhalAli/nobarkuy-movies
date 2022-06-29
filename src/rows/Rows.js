@@ -10,7 +10,7 @@ function Rows({ fetchType, category }) {
     async function fetchMovies() {
       const result = await axios.get(fetchType);
       setMovies(result.data.results);
-      console.log(result.data.results[0]);
+      console.log("test");
     }
     fetchMovies();
   }, [fetchType]);
