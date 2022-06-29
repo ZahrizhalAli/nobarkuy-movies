@@ -2,6 +2,7 @@ import React from "react";
 import Header from "./header/Header";
 import Banner from "./banner/Banner";
 import Rows from "./rows/Rows";
+import requests from "./requests/requests";
 
 import "./App.css";
 
@@ -10,7 +11,13 @@ function App() {
     <div className="App">
       <Header />
       <Banner />
-      <Rows />
+      <Rows fetchType={requests.fetchTopRated} category="Top Rated Movies" />
+
+      <Rows fetchType={requests.fetchPopularMovies} category="Popular Movies" />
+      <Rows
+        fetchType={requests.fetchRecommendedMovies}
+        category="Recommended Movies"
+      />
     </div>
   );
 }
