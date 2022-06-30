@@ -1,6 +1,6 @@
 import React from "react";
 
-function Row({ title, poster_path, vote_average, genres }) {
+function Row({ title, poster_path, movie_id, vote_average, genres }) {
   return (
     <>
       <div className="item row__movie">
@@ -68,7 +68,7 @@ function Row({ title, poster_path, vote_average, genres }) {
               <div className="gen-info-contain">
                 <div className="gen-movie-info">
                   <h3>
-                    <a href="single-movie.html">{title}</a>
+                    <a href={`/movie/${movie_id}`}>{title}</a>
                   </h3>
                 </div>
                 <div className="gen-movie-meta-holder">

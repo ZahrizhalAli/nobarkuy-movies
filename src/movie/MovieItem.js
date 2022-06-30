@@ -69,7 +69,7 @@ function MovieItem({ title, movie_id, poster_path, vote_average }) {
             <div className="gen-info-contain">
               <div className="gen-movie-info">
                 <h3>
-                  <a href="movies-home.html">{title}</a>
+                  <a href={`/movie/${movie_id}`}>{title}</a>
                 </h3>
               </div>
               <div className="gen-movie-meta-holder">

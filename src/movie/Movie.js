@@ -2,18 +2,22 @@ import React, { useEffect, useState } from "react";
 import MovieItem from "./MovieItem";
 import axios from "../requests/axios";
 import requests from "../requests/requests";
+import { useParams } from "react-router-dom";
+
 function Movie() {
+  const { movieid } = useParams();
+
   const [movie, setMovie] = useState([]);
   const [movies, setMovies] = useState([]);
   const base_api = "https://image.tmdb.org/t/p/original";
-
+  const API_KEY = "837685425a790c3cd7988803000b79b6";
   useEffect(() => {
     async function getMovies() {
       const result = await axios.get(requests.fetchSimilarMovies);
       setMovies(result.data.results);
     }
     async function getMovie() {
-      const result = await axios.get(requests.fetchMovie);
+      const result = await axios.get(`/movie/${movieid}?api_key=${API_KEY}`);
       setMovie(result.data);
       console.table(result.data);
     }

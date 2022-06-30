@@ -10,7 +10,7 @@ function Rows({ fetchType, category }) {
     async function fetchMovies() {
       const result = await axios.get(fetchType);
       setMovies(result.data.results);
-      console.log("test");
+      // console.log(result.data.results);
     }
     fetchMovies();
   }, [fetchType]);
@@ -60,6 +60,7 @@ function Rows({ fetchType, category }) {
                           title={m.title}
                           poster_path={`${base_api}${m.poster_path}`}
                           vote_average={m.vote_average}
+                          movie_id={m.id}
                         />
                       );
                     })}

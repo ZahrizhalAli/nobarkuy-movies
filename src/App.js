@@ -22,7 +22,7 @@ function App() {
             </>
           }
         />
-        <Route path="/movie" element={<Movie />} />
+        <Route path="/movie/:movieid" element={<Movie />} />
       </Routes>
     </div>
   );
