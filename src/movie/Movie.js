@@ -1,16 +1,91 @@
-import React, { useEffect, useState } from "react";
-import MovieItem from "./MovieItem";
-import axios from "../requests/axios";
-import requests from "../requests/requests";
-import { useParams } from "react-router-dom";
-
+import React, { useEffect, useState } from 'react';
+import MovieItem from './MovieItem';
+import axios from '../requests/axios';
+import requests from '../requests/requests';
+import { useParams } from 'react-router-dom';
+import * as tf from '@tensorflow/tfjs';
+import padSequences from '../paddedSeq';
 function Movie() {
   const { movieid } = useParams();
 
   const [movie, setMovie] = useState([]);
   const [movies, setMovies] = useState([]);
-  const base_api = "https://image.tmdb.org/t/p/original";
-  const API_KEY = "837685425a790c3cd7988803000b79b6";
+  const [text, setText] = useState('');
+  const [metadata, setMetadata] = useState();
+  const [model, setModel] = useState();
+  const [testText, setTestText] = useState('');
+  const [testScore, setScore] = useState('');
+  const [trimedText, setTrim] = useState('');
+  const [seqText, setSeq] = useState('');
+  const [padText, setPad] = useState('');
+  const [inputText, setInput] = useState('');
+  const [result, setResult] = useState(null);
+
+  const OOV_INDEX = 2;
+  const url = {
+    model:
+      'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/model.json',
+    metadata:
+      'https://storage.googleapis.com/tfjs-models/tfjs/sentiment_cnn_v1/metadata.json',
+  };
+  const base_api = 'https://image.tmdb.org/t/p/original';
+  const API_KEY = '837685425a790c3cd7988803000b79b6';
+
+  // LOAD MODEL
+  async function loadModel(url) {
+    try {
+      const model = await tf.loadLayersModel(url.model);
+      setModel(model);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  // LOAD METADATA
+  async function loadMetadata(url) {
+    try {
+      const metadataJson = await fetch(url.metadata);
+      const metadata = await metadataJson.json();
+      setMetadata(metadata);
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  // GET SENTIMENT SCORE
+  const getSentimentScore = (text) => {
+    console.log(text);
+    const inputText = text
+      .trim()
+      .toLowerCase()
+      .replace(/(\.|\,|\!)/g, '')
+      .split(' ');
+    setTrim(inputText);
+    console.log(inputText);
+    const sequence = inputText.map((word) => {
+      let wordIndex = metadata.word_index[word] + metadata.index_from;
+      if (wordIndex > metadata.vocabulary_size) {
+        wordIndex = OOV_INDEX;
+      }
+      return wordIndex;
+    });
+    setSeq(sequence);
+    console.log(sequence);
+    // Perform truncation and padding.
+    const paddedSequence = padSequences([sequence], metadata.max_len);
+    console.log(metadata.max_len);
+    setPad(paddedSequence);
+
+    const input = tf.tensor2d(paddedSequence, [1, metadata.max_len]);
+    console.log(input);
+    setInput(input);
+    const predictOut = model.predict(input);
+    const score = predictOut.dataSync()[0];
+    predictOut.dispose();
+    setScore(score);
+    return score;
+  };
+
   useEffect(() => {
     async function getMovies() {
       const result = await axios.get(requests.fetchSimilarMovies);
@@ -21,9 +96,21 @@ function Movie() {
       setMovie(result.data);
       console.table(result.data);
     }
+    tf.ready().then(() => {
+      loadModel(url);
+      loadMetadata(url);
+    });
+
     getMovies();
     getMovie();
   }, []);
+
+  async function handleSubmit(e) {
+    e.preventDefault();
+    setResult(getSentimentScore(text));
+    console.log(result);
+  }
+
   return (
     <>
       <section className="gen-section-padding-3 gen-single-movie">
@@ -146,17 +233,24 @@ function Movie() {
             </div>
           </div>
           <div className="comment-respond">
-            <h3 className="comment-reply-title">Write a Reply or Comment </h3>
+            {result && result > 0.5 ? (
+              <h3 className="comment-reply-title">Positive</h3>
+            ) : (
+              <h3 className="comment-reply-title">Negative</h3>
+            )}
             <div className="row">
               <div className="col-lg-12">
-                <form>
+                <form onSubmit={handleSubmit}>
                   <p>Type your review here.</p>
                   <div className="row">
                     <div className="col-xl-12">
                       <p className="comment-form-comment">
                         <textarea
+                          name="comment"
                           rows="6"
                           cols="60"
+                          value={text}
+                          onChange={(e) => setText(e.target.value)}
                           placeholder="Enter Your Comment"
                         ></textarea>
                       </p>
