@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
-import Row from "./Row.js";
-import axios from "../requests/axios";
+import React, { useState, useEffect } from 'react';
+import Row from './Row.js';
+import axios from '../requests/axios';
 
 function Rows({ fetchType, category }) {
   const [movies, setMovies] = useState([]);
-  const base_api = "https://image.tmdb.org/t/p/original";
+  const base_api = 'https://image.tmdb.org/t/p/original';
 
   useEffect(() => {
     async function fetchMovies() {
@@ -13,7 +13,7 @@ function Rows({ fetchType, category }) {
       // console.log(result.data.results);
     }
     fetchMovies();
-  }, [fetchType]);
+  }, []);
 
   return (
     <>

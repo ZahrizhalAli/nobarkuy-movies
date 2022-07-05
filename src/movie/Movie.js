@@ -20,6 +20,7 @@ function Movie() {
   const [padText, setPad] = useState('');
   const [inputText, setInput] = useState('');
   const [result, setResult] = useState(null);
+  const [load, setLoad] = useState(false);
 
   const OOV_INDEX = 2;
   const url = {
@@ -107,8 +108,10 @@ function Movie() {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setLoad(true);
     setResult(getSentimentScore(text));
-    console.log(result);
+    // console.log(result);
+    setLoad(false);
   }
 
   return (
@@ -233,15 +236,20 @@ function Movie() {
             </div>
           </div>
           <div className="comment-respond">
-            {result && result > 0.5 ? (
-              <h3 className="comment-reply-title">Positive</h3>
+            {result == null ? (
+              <h3 className="comment-reply-title">Waiting review...</h3>
+            ) : result > 0.5 ? (
+              <h3 className="comment-reply-title">Positive Comment</h3>
             ) : (
-              <h3 className="comment-reply-title">Negative</h3>
+              <h3 className="comment-reply-title">Negative Comment</h3>
             )}
             <div className="row">
               <div className="col-lg-12">
                 <form onSubmit={handleSubmit}>
-                  <p>Type your review here.</p>
+                  <p>
+                    Type your review here and identify wether or not your
+                    comment is a positive / good or negative / bad comments
+                  </p>
                   <div className="row">
                     <div className="col-xl-12">
                       <p className="comment-form-comment">
@@ -256,7 +264,7 @@ function Movie() {
                       </p>
                     </div>
                   </div>
-                  <input type="submit" value="Post comment" />
+                  <input type="submit" value={load ? 'Loading...' : 'Test'} />
                 </form>
               </div>
             </div>

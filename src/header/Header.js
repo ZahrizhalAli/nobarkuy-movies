@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 function Header() {
   return (
@@ -9,12 +9,12 @@ function Header() {
             <div className="row">
               <div className="col-lg-12">
                 <nav className="navbar navbar-expand-lg navbar-light">
-                  <a className="navbar-brand" href="#">
-                    <img
-                      className="img-fluid logo"
-                      src="images/logo-1.png"
-                      alt="streamlab-image"
-                    />
+                  <a
+                    className="navbar-brand "
+                    style={{ color: 'white', fontSize: '50px' }}
+                    href="/"
+                  >
+                    Nobarkuy!
                   </a>
                   <div
                     className="collapse navbar-collapse"
